@@ -54,6 +54,7 @@ while True:
                 cmd = commands[cmd_num]
                 proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
                 terminal_pid = proc.pid
+                time.sleep(5)
                 # print(terminal_pid)
         else:
             if terminal_pid is not None:
