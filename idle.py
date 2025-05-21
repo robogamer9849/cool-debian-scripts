@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+#   install these for this to work:
+#       sudo apt install kitty cmatrix nyancat libcaca0 
+#   and these ones that cant be installed by apt:
+#       snap install asciiquarium
+#       
+#       and for pipes.sh you have to search and install it from github
+
 
 import gi
 import subprocess
@@ -17,7 +24,9 @@ terminal_pid = None
 commands = [
     "cmatrix",
     "pipes.sh",
-    "asciiquarium"
+    "asciiquarium",
+    "nyancat",
+    "cacafire"
 ]
 
 def get_idle_time():
@@ -41,9 +50,9 @@ while True:
         if idle_time >= IDLE_THRESHOLD:
             if terminal_pid is None:
                 print(f"User idle for {idle_time}s. Launching cmatrix...")
-                cmd_num = random.randint(0,2)
+                cmd_num = random.randint(0, 4)
                 cmd = commands[cmd_num]
-                proc = subprocess.Popen([term, "--start-as=fullscreen", cmd])
+                proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
                 terminal_pid = proc.pid
                 # print(terminal_pid)
         else:
