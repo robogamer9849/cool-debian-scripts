@@ -18,7 +18,7 @@ from gi.repository import Gio
 # Idle time threshold (in seconds)
 term="kitty"
 IDLE_THRESHOLD = 300
-CHECK_INTERVAL = 10
+CHECK_INTERVAL = 2.5
 terminal_pid = None
 
 commands = [
