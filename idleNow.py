@@ -17,8 +17,6 @@ from gi.repository import Gio
 
 # Idle time threshold (in seconds)
 term="kitty"
-IDLE_THRESHOLD = 300
-CHECK_INTERVAL = 2.5
 terminal_pid = None
 
 commands = [
@@ -43,26 +41,24 @@ def get_idle_time():
     idle_time_ms = proxy.call_sync("GetIdletime", None, Gio.DBusCallFlags.NONE, -1, None)
     return idle_time_ms.unpack()[0] // 1000  # convert to seconds
 
-while True:
-    try:
-        idle_time = get_idle_time()
-        # print(idle_time)
-        if idle_time >= IDLE_THRESHOLD:
-            if terminal_pid is None:
-                print(f"User idle for {idle_time}s. Launching...")
-                cmd_num = random.randint(0, 4)
-                cmd = commands[cmd_num]
-                proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
-                terminal_pid = proc.pid
-                time.sleep(5)
-                # print(terminal_pid)
-        else:
-            if terminal_pid is not None:
+
+try:
+    idle_time = get_idle_time()
+    # print(idle_time)
+    if terminal_pid is None:
+        print(f"User idle for {idle_time}s. Launching...")
+        cmd_num = random.randint(0, 4)
+        cmd = commands[cmd_num]
+        proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
+        terminal_pid = proc.pid
+        time.sleep(5)
+        # print(terminal_pid)
+    while True:
+        if terminal_pid is not None:
                 print(f"User active again. Closing...")
                 subprocess.call(["pkill", term])
                 terminal_pid = None
                 cmd = None
-    except Exception as e:
-        print(f"Error: {e}")
-
-    time.sleep(CHECK_INTERVAL)
+                break
+except Exception as e:
+    print(f"Error: {e}")
