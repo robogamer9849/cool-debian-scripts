@@ -33,7 +33,8 @@ try:
     cmd = commands[cmd_num]
     print([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
     proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
-    with open('terminal_pid.txt', 'w') as file:
-        file.write(str(proc.pid))
 except Exception as e:
     print(f"Error: {e}")
+finally:
+    with open(f"{__file__[:-len('idleNow.py')]}/active_time.txt", 'w') as file:
+        file.write(str(time.time()))

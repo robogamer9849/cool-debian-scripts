@@ -49,12 +49,14 @@ while True:
     try:
         idle_time = get_idle_time()
         try:
-            with open('terminal_pid.txt', 'r') as f:
-                saved_terminal_pid = f.read().strip()
-        except FileNotFoundError:
-            saved_terminal_pid = None
+            with open('active_time.txt', 'r') as f:
+                saved_time = float(f.read().strip())
+                opened_in = time.time() - saved_time
+        except Exception:            
+            opened_in = -1
+
         if idle_time >= IDLE_THRESHOLD:
-            if terminal_pid is None and saved_terminal_pid is None:
+            if terminal_pid is None and opened_in is None:
                 print(f"User idle for {idle_time}s. Launching...")
                 cmd_num = random.randint(0, 4)
                 cmd = commands[cmd_num]
@@ -62,18 +64,16 @@ while True:
                 terminal_pid = proc.pid
                 time.sleep(5)
         else:
-            print(terminal_pid)
-            print(saved_terminal_pid)
+            print(opened_in)
             print(idle_time)
             print('---------')
-            time.sleep(2)
-            if idle_time < 2:
+            if idle_time < 2 and opened_in > 2:
                 print(f"User active again. Closing...")
                 subprocess.call(["pkill", term])
                 terminal_pid = None
                 cmd = None
                 try:
-                    os.remove('terminal_pid.txt')
+                    os.remove('active_time.txt')
                 except FileNotFoundError:
                     pass
                 
