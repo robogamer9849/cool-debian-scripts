@@ -17,6 +17,7 @@ from gi.repository import Gio
 
 # Idle time threshold (in seconds)
 term="kitty"
+CHECK_INTERVAL = 2.5
 terminal_pid = None
 
 commands = [
@@ -60,5 +61,6 @@ try:
                 terminal_pid = None
                 cmd = None
                 break
+    time.sleep(CHECK_INTERVAL)
 except Exception as e:
     print(f"Error: {e}")
