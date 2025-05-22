@@ -27,30 +27,13 @@ commands = [
     "nyancat",
     "cacafire"
 ]
-
-def get_idle_time():
-    with open('idle_time.txt', 'r') as file:
-            return int(file.read().strip())
-    
-
 try:
-    # print(idle_time)
-    if terminal_pid is None:
-        print(f"User idle. Launching...")
-        cmd_num = random.randint(0, 4)
-        cmd = commands[cmd_num]
-        proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
-        terminal_pid = proc.pid
-        time.sleep(5)
-        # print(terminal_pid)
-    while True:
-        idle_time = get_idle_time()
-        if idle_time == 0:
-                print(f"User active again. Closing...")
-                subprocess.call(["pkill", term])
-                terminal_pid = None
-                cmd = None
-                break
-    time.sleep(CHECK_INTERVAL)
+    print(f"User idle. Launching...")
+    cmd_num = random.randint(0, 4)
+    cmd = commands[cmd_num]
+    print([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
+    proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
+    with open('terminal_pid.txt', 'w') as file:
+        file.write(str(proc.pid))
 except Exception as e:
     print(f"Error: {e}")

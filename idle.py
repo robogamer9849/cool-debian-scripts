@@ -11,6 +11,7 @@ import gi
 import subprocess
 import time
 import random
+import os
 
 gi.require_version('Gio', '2.0')
 from gi.repository import Gio
@@ -18,7 +19,7 @@ from gi.repository import Gio
 # Idle time threshold (in seconds)
 term="kitty"
 IDLE_THRESHOLD = 300
-CHECK_INTERVAL = 2.5
+CHECK_INTERVAL = 3
 terminal_pid = None
 
 commands = [
@@ -42,29 +43,40 @@ def get_idle_time():
     )
     idle_time_ms = proxy.call_sync("GetIdletime", None, Gio.DBusCallFlags.NONE, -1, None)
     idle_time = idle_time_ms.unpack()[0] // 1000  # convert to seconds
-    with open('idle_time.txt', 'w') as f:
-        f.write(str(idle_time))
     return idle_time
 
 while True:
     try:
         idle_time = get_idle_time()
-        # print(idle_time)
+        try:
+            with open('terminal_pid.txt', 'r') as f:
+                saved_terminal_pid = f.read().strip()
+        except FileNotFoundError:
+            saved_terminal_pid = None
         if idle_time >= IDLE_THRESHOLD:
-            if terminal_pid is None:
+            if terminal_pid is None and saved_terminal_pid is None:
                 print(f"User idle for {idle_time}s. Launching...")
                 cmd_num = random.randint(0, 4)
                 cmd = commands[cmd_num]
                 proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
                 terminal_pid = proc.pid
                 time.sleep(5)
-                # print(terminal_pid)
         else:
-            if idle_time == 0:
+            print(terminal_pid)
+            print(saved_terminal_pid)
+            print(idle_time)
+            print('---------')
+            time.sleep(2)
+            if idle_time < 2:
                 print(f"User active again. Closing...")
                 subprocess.call(["pkill", term])
                 terminal_pid = None
                 cmd = None
+                try:
+                    os.remove('terminal_pid.txt')
+                except FileNotFoundError:
+                    pass
+                
     except Exception as e:
         print(f"Error: {e}")
 
