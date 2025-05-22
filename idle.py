@@ -57,7 +57,7 @@ while True:
                 time.sleep(5)
                 # print(terminal_pid)
         else:
-            if terminal_pid is not None:
+            if idle_time == 0:
                 print(f"User active again. Closing...")
                 subprocess.call(["pkill", term])
                 terminal_pid = None

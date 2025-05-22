@@ -43,10 +43,9 @@ def get_idle_time():
 
 
 try:
-    idle_time = get_idle_time()
     # print(idle_time)
     if terminal_pid is None:
-        print(f"User idle for {idle_time}s. Launching...")
+        print(f"User idle. Launching...")
         cmd_num = random.randint(0, 4)
         cmd = commands[cmd_num]
         proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
@@ -54,7 +53,8 @@ try:
         time.sleep(5)
         # print(terminal_pid)
     while True:
-        if terminal_pid is not None:
+        idle_time = get_idle_time()
+        if idle_time == 0:
                 print(f"User active again. Closing...")
                 subprocess.call(["pkill", term])
                 terminal_pid = None
