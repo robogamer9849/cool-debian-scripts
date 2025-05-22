@@ -44,8 +44,9 @@ def get_idle_time():
     idle_time = idle_time_ms.unpack()[0] // 1000  # convert to seconds
     with open('idle_time.txt', 'w') as f:
         f.write(str(idle_time))
+    return idle_time
 
-
+while True:
     try:
         idle_time = get_idle_time()
         # print(idle_time)
