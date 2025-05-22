@@ -29,19 +29,9 @@ commands = [
 ]
 
 def get_idle_time():
-    bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-    proxy = Gio.DBusProxy.new_sync(
-        bus,
-        Gio.DBusProxyFlags.NONE,
-        None,
-        "org.gnome.Mutter.IdleMonitor",
-        "/org/gnome/Mutter/IdleMonitor/Core",
-        "org.gnome.Mutter.IdleMonitor",
-        None,
-    )
-    idle_time_ms = proxy.call_sync("GetIdletime", None, Gio.DBusCallFlags.NONE, -1, None)
-    return idle_time_ms.unpack()[0] // 1000  # convert to seconds
-
+    with open('idle_time.txt', 'r') as file:
+            return int(file.read().strip())
+    
 
 try:
     # print(idle_time)
