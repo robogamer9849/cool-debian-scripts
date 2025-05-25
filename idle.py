@@ -57,18 +57,18 @@ while True:
 
         if idle_time >= IDLE_THRESHOLD:
             if terminal_pid is None and opened_in is None:
-                print(f"User idle for {idle_time}s. Launching...")
+                # print(f"User idle for {idle_time}s. Launching...")
                 cmd_num = random.randint(0, 4)
                 cmd = commands[cmd_num]
                 proc = subprocess.Popen([term, "--start-as=fullscreen","env", "TERM=xterm-256color", cmd])
                 terminal_pid = proc.pid
                 time.sleep(5)
         else:
-            print(opened_in)
-            print(idle_time)
-            print('---------')
+            # print(opened_in)
+            # print(idle_time)
+            # print('---------')
             if idle_time < 2 and opened_in > 2:
-                print(f"User active again. Closing...")
+                # print(f"User active again. Closing...")
                 subprocess.call(["pkill", term])
                 terminal_pid = None
                 cmd = None
@@ -78,6 +78,7 @@ while True:
                     pass
                 
     except Exception as e:
-        print(f"Error: {e}")
+        # print(f"Error: {e}")
+        pass
 
     time.sleep(CHECK_INTERVAL)
